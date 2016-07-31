@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BDBOAuth1Manager
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
       // Override point for customization after application launch.
+
+      // customize navigation bar: red and white {
+      //
+      UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
+
+      // buttons
+      UINavigationBar.appearance().tintColor = UIColor.whiteColor()
+      UINavigationBar.appearance().barTintColor =  UIColor(red:0.33, green:0.67, blue:0.93, alpha:1.0)
+      //UIColor(red: CGFloat(196/255.0), green: CGFloat(18/255.0), blue: CGFloat(0), alpha: CGFloat(1))
+
+      // white
+      // [View controller-based status bar appearance] set to NO in Info.plist
+
+      // title
+      UINavigationBar.appearance().titleTextAttributes = [
+         NSForegroundColorAttributeName:UIColor.whiteColor(),
+         NSFontAttributeName: UIFont(name: "Arial", size: 13)!
+      ]
+      
+      // }
+
+      let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+      if User.currentUser != nil {
+         // got to twitter screen instead of the login screen
+         print ("Current user is set! Routing to Tweets view controller...")
+         let viewController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController")
+         window?.rootViewController = viewController
+
+      }else {
+         print ("No current user set! Routing to login screen...")
+      }
+
+      NSNotificationCenter.defaultCenter().addObserverForName(User.LOGOUT_NOTIFICATION, object: nil, queue: NSOperationQueue.mainQueue()) { (NSNotification) -> Void in
+         let viewController = storyboard.instantiateInitialViewController()
+         self.window?.rootViewController = viewController
+
+         print ("User succesfully logout!")
+      }
+      
       return true
    }
 
@@ -41,6 +82,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
    }
 
+   func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 
+      //2. get the access token
+      TwitterClient.sharedInstance.handleOpenUrl(url)
+      return true
+   }
 }
 
