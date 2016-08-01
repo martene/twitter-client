@@ -97,7 +97,7 @@ class TwitterClient: BDBOAuth1SessionManager {
 
    func currentUser(success: (User) -> (), failure: (NSError) -> ()) {
 
-      GET("1.1/account/verify_credentials.json", parameters: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+      GET("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
 
          let userResponse = response as? NSDictionary
          let user = User(dictionary: userResponse!)
@@ -111,7 +111,7 @@ class TwitterClient: BDBOAuth1SessionManager {
 
    func homeTimeLine(success: ([Tweet]) -> (), failure: (NSError) -> ()){
       // 1.1/statuses/home_timeline.json
-      GET("1.1/statuses/home_timeline.json", parameters: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+      GET("1.1/statuses/home_timeline.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
 
          let userTimeline = response as! [NSDictionary]
          let tweets = Tweet.tweetsFromArray(userTimeline)
@@ -119,5 +119,28 @@ class TwitterClient: BDBOAuth1SessionManager {
          },failure: { (operation: NSURLSessionDataTask?, error: NSError) in
             failure(error)
       })
+   }
+
+   func createTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
+      print("posting new tweet....")
+      POST("1.1/statuses/update.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+         print("...successfull")
+         let newTweet = response as? NSDictionary
+         let tweet = Tweet(dictionary: newTweet!)
+         success(tweet)
+
+      }) { (operation: NSURLSessionDataTask?, error: NSError) in
+         print("...error posting")
+         failure(error)
+      }
+   }
+
+   func favoriteTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
+      print("favoriting a tweet....")
+      POST("1.1/favorites/create.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+         print("tweet favorited")
+      }) { (operation: NSURLSessionDataTask?, error: NSError) in
+         print("Error fav tweet")
+      }
    }
 }

@@ -21,14 +21,21 @@ class TweetDetailViewController: UIViewController {
 
    @IBOutlet weak var retweetCountLabel: UILabel!
    @IBOutlet weak var favoriteCountLabel: UILabel!
+
+   @IBOutlet weak var replyButton: UIButton!
+   @IBOutlet weak var retweetButton: UIButton!
+   @IBOutlet weak var favoriteButton: UIButton!
+
    var tweet: Tweet!
+   var tweetFavorited = false
 
    override func viewDidLoad() {
       super.viewDidLoad()
 
       // Do any additional setup after loading the view.
       replyButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
-      //navigationItem.backBarButtonItem!.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
+      print("back bar item \(navigationItem.backBarButtonItem)")
+  //    navigationItem.backBarButtonItem!.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
 
       print ("tweet \(tweet.retweetCount)")
       let retweetedCount = (tweet.retweeted!) ?? 0
@@ -51,6 +58,18 @@ class TweetDetailViewController: UIViewController {
       userNameLabel.text = tweet.user?.name as? String
       screenNameLabel.text = "@" + ((tweet.user?.screenName)! as String)
 
+      replyButton.setImage(UIImage(named: "reply"), forState: UIControlState.Normal)
+      retweetButton.setImage(UIImage(named: "retweet-gray-16"), forState: UIControlState.Normal)
+
+      // check if user favorite this tweet
+      //tweetFavorited = { from tweet }
+      var favImage: UIImage!
+      if tweetFavorited {
+         favImage = UIImage(named: "favorite-gold")
+      }else {
+         favImage = UIImage(named: "favorite-16")
+      }
+      favoriteButton.setImage(favImage, forState: UIControlState.Normal)
    }
 
    override func didReceiveMemoryWarning() {
@@ -58,9 +77,20 @@ class TweetDetailViewController: UIViewController {
       // Dispose of any resources that can be recreated.
 
 
+
    }
 
+   override func viewDidAppear(animated: Bool) {
+      super.viewDidAppear(animated)
+      print("viewDidAppear back bar item \(navigationItem.backBarButtonItem)")
+   }
 
+   @IBAction func onFavoriteButton(sender: UIButton) {
+       tweetFavorited = !tweetFavorited
+
+      // post Favorite
+   
+   }
    /*
     // MARK: - Navigation
 

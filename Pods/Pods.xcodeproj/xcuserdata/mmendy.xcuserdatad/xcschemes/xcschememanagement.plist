@@ -19,20 +19,30 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SMIconLabel.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>18705FF383581FE0F1A422A8D9A743EA</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>1C3436CEA5C3D39764C5F54374794ECB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>445B3D47256376A8FB06D383FDBEA0C4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>54A7573FC735311429886C18CB3148A4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FA97E70A2034C49FBF8285B148C02043</key>
 		<dict>
 			<key>primary</key>
 			<true/>

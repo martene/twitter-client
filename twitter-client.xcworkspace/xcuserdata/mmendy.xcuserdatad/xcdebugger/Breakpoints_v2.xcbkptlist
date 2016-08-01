@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "twitter-client/TweetDetailViewController.swift"
-            timestampString = "491692326.885309"
+            filePath = "twitter-client/TweetsViewController.swift"
+            timestampString = "491697034.269344"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "onNewTweet(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -44,21 +44,29 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
       TwitterClient.sharedInstance.logoutUser()
    }
 
+   @IBAction func onNewTweet(sender: AnyObject) {
+      print("creating new tweet...")
+   }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
+   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+      // Get the new view controller using segue.destinationViewController.
+      // Pass the selected object to the new view controller.
 
-      let tweetCell = sender as! UITableViewCell
-      let indexPath = tweetsTableView.indexPathForCell(tweetCell)
+      print("segue id: \(segue.identifier)")
 
-      print("segue: \(indexPath!.row)")
-      let tweet = tweets[indexPath!.row]
-
-      let detailViewController = segue.destinationViewController as! TweetDetailViewController
-      detailViewController.tweet = tweet
+      if segue.identifier == "TweetDetailSeque" {
+         let tweetCell = sender as! UITableViewCell
+         let indexPath = tweetsTableView.indexPathForCell(tweetCell)
+         print("segue: \(indexPath!.row)")
+         let tweet = tweets[indexPath!.row]
+         let detailViewController = segue.destinationViewController as! TweetDetailViewController
+         detailViewController.tweet = tweet
+      }
+      else {
+         
+      }
    }
 
 
