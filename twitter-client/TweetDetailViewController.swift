@@ -35,7 +35,7 @@ class TweetDetailViewController: UIViewController {
       // Do any additional setup after loading the view.
       replyButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
       print("back bar item \(navigationItem.backBarButtonItem)")
-  //    navigationItem.backBarButtonItem!.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
+      //    navigationItem.backBarButtonItem!.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
 
       print ("tweet \(tweet.retweetCount)")
       let retweetedCount = (tweet.retweeted!) ?? 0
@@ -51,23 +51,25 @@ class TweetDetailViewController: UIViewController {
 
       tweetTextLabel.text = tweet.text! as String
       retweetCountLabel.text = String(tweet.retweetCount!)
-      favoriteCountLabel.text = String(tweet.favoritesCount!)
+      favoriteCountLabel.text = String(tweet.favoriteCount!)
 
       // user's
       profileImage.setImageWithURL((tweet.user?.profileUrl)!)
+      profileImage.layer.cornerRadius = 3
+      profileImage.clipsToBounds = true
       userNameLabel.text = tweet.user?.name as? String
       screenNameLabel.text = "@" + ((tweet.user?.screenName)! as String)
 
       replyButton.setImage(UIImage(named: "reply"), forState: UIControlState.Normal)
-      retweetButton.setImage(UIImage(named: "retweet-gray-16"), forState: UIControlState.Normal)
+      retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
 
       // check if user favorite this tweet
-      //tweetFavorited = { from tweet }
+      tweetFavorited = tweet.favorited != 0
       var favImage: UIImage!
       if tweetFavorited {
          favImage = UIImage(named: "favorite-gold")
       }else {
-         favImage = UIImage(named: "favorite-16")
+         favImage = UIImage(named: "star2")
       }
       favoriteButton.setImage(favImage, forState: UIControlState.Normal)
    }
@@ -75,9 +77,6 @@ class TweetDetailViewController: UIViewController {
    override func didReceiveMemoryWarning() {
       super.didReceiveMemoryWarning()
       // Dispose of any resources that can be recreated.
-
-
-
    }
 
    override func viewDidAppear(animated: Bool) {
@@ -85,12 +84,7 @@ class TweetDetailViewController: UIViewController {
       print("viewDidAppear back bar item \(navigationItem.backBarButtonItem)")
    }
 
-   @IBAction func onFavoriteButton(sender: UIButton) {
-       tweetFavorited = !tweetFavorited
 
-      // post Favorite
-   
-   }
    /*
     // MARK: - Navigation
 
@@ -101,4 +95,60 @@ class TweetDetailViewController: UIViewController {
     }
     */
 
+   @IBAction func onReplyButton(sender: UIButton) {
+   }
+
+   @IBAction func onRetweetButton(sender: UIButton) {
+
+
+      print ("tweet id: \(tweet.id)")
+      let params: NSDictionary = ["id" : tweet.id]
+      if tweetFavorited { //
+         TwitterClient.sharedInstance.unretweetTweet(params, success: { (tweet: Tweet) -> () in
+            print("Tweet unretweeted!")
+            self.tweetFavorited = false
+            self.retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
+            self.retweetedLabel.text = String(tweet.retweetCount!)
+         }) { (error: NSError) -> () in
+            print("Error unretweet!")
+         }
+      }
+      else {
+
+         TwitterClient.sharedInstance.retweetTweet(params, success: { (tweet: Tweet) -> () in
+            print("Tweet retweeted!")
+            self.tweetFavorited = true
+            self.favoriteButton.setImage(UIImage(named: "retweet2"), forState: UIControlState.Normal)
+            self.retweetedLabel.text = String(tweet.retweetCount!)
+         }) { (error: NSError) -> () in
+            print("Error reretweet!")
+         } }
+
+   }
+
+   @IBAction func onFavoriteButton(sender: UIButton) {
+
+      print ("tweet id: \(tweet.id)")
+      let params: NSDictionary = ["id" : tweet.id]
+      if tweetFavorited { //
+         TwitterClient.sharedInstance.unfavoriteTweet(params, success: { (tweet: Tweet) -> () in
+            print("Tweet unfavorited!")
+            self.tweetFavorited = false
+            self.favoriteButton.setImage(UIImage(named: "star2"), forState: UIControlState.Normal)
+            self.favoriteCountLabel.text = String(tweet.favoriteCount!)
+         }) { (error: NSError) -> () in
+            print("Error favoriting tweet!")
+         }
+      }
+      else {
+
+         TwitterClient.sharedInstance.favoriteTweet(params, success: { (tweet: Tweet) -> () in
+            print("Tweet favorited!")
+            self.tweetFavorited = true
+            self.favoriteButton.setImage(UIImage(named: "favorite-gold"), forState: UIControlState.Normal)
+            self.favoriteCountLabel.text = String(tweet.favoriteCount!)
+         }) { (error: NSError) -> () in
+            print("Error favoriting tweet!")
+         } }
+   }
 }

@@ -122,11 +122,11 @@ class TwitterClient: BDBOAuth1SessionManager {
    }
 
    func createTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
-      print("posting new tweet....")
-      POST("1.1/statuses/update.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+      print("posting new tweet....\(parameters)")
+      POST("1.1/statuses/update.json", parameters: parameters, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
          print("...successfull")
-         let newTweet = response as? NSDictionary
-         let tweet = Tweet(dictionary: newTweet!)
+         let tweetResponse = response as? NSDictionary
+         let tweet = Tweet(dictionary: tweetResponse!)
          success(tweet)
 
       }) { (operation: NSURLSessionDataTask?, error: NSError) in
@@ -135,12 +135,72 @@ class TwitterClient: BDBOAuth1SessionManager {
       }
    }
 
+
+   //
+   // retweet
+   //
+   func retweetTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
+      print("retweeting...")
+      let tweetId = parameters!["id"] as! String
+
+      POST("1.1/status/retweet/\(tweetId).json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+         print("retweeted!")
+
+         let tweetResponse = response as? NSDictionary
+         let tweet = Tweet(dictionary: tweetResponse!)
+         success(tweet)
+
+      }) { (operation: NSURLSessionDataTask?, error: NSError) in
+         print("Error retweet")
+      }
+   }
+
+   func unretweetTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
+      print("unretweeting...")
+      let tweetId = parameters!["id"] as! String
+
+      POST("1.1/status/unretweet/\(tweetId).json", parameters: parameters, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+
+         let tweetResponse = response as? NSDictionary
+         let tweet = Tweet(dictionary: tweetResponse!)
+         success(tweet)
+         
+         print("unretweeted!")
+      }) { (operation: NSURLSessionDataTask?, error: NSError) in
+         print("Error unretweet")
+      }
+   }
+
+   //
+   // favorites
+   //
+
    func favoriteTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
-      print("favoriting a tweet....")
-      POST("1.1/favorites/create.json", parameters: nil, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
-         print("tweet favorited")
+      print("favoriting a tweet...")
+      POST("1.1/favorites/create.json", parameters: parameters, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+         print("tweet favorited!")
+
+         let tweetResponse = response as? NSDictionary
+         let tweet = Tweet(dictionary: tweetResponse!)
+         success(tweet)
+
       }) { (operation: NSURLSessionDataTask?, error: NSError) in
          print("Error fav tweet")
       }
    }
+
+   func unfavoriteTweet(parameters: AnyObject?, success: (Tweet) -> (), failure: (NSError) -> ()){
+      print("unfavoriting a tweet...")
+      POST("1.1/favorites/destroy.json", parameters: parameters, progress: nil, success: { (operation: NSURLSessionDataTask, response: AnyObject?) in
+
+         let tweetResponse = response as? NSDictionary
+         let tweet = Tweet(dictionary: tweetResponse!)
+         success(tweet)
+
+         print("tweet unfavorited!")
+      }) { (operation: NSURLSessionDataTask?, error: NSError) in
+         print("Error unfav tweet")
+      }
+   }
+
 }

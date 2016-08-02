@@ -13,26 +13,29 @@ class Tweet: NSObject {
    var user: User?
    var text: NSString!
    var retweetCount: Int!
-   var favoritesCount: Int!
+   var favoriteCount: Int!
    var createdAt: NSDate!
    var retweeted: Int!
+   var id: NSString!
+   var favorited: Int!
 
    init(dictionary: NSDictionary){
+      //print("tweet: \(dictionary["id_str"])" )
 
       let userDictionary = dictionary["user"] as? NSDictionary
       user = User(dictionary: userDictionary!)
+      id = dictionary["id_str"] as? String
       text = dictionary["text"] as? String
       retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
-      favoritesCount = (dictionary["favorites_count"] as? Int) ?? 0
+      favoriteCount = (dictionary["favorite_count"] as? Int) ?? 0
       retweeted = (dictionary["retweeted"] as? Int) ?? 0
 
       let createdAtString = dictionary["created_at"] as? String
       let dateFormatter = NSDateFormatter()
- //     dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
       dateFormatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
- //     dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
       createdAt = dateFormatter.dateFromString(createdAtString!)
 
+      favorited = (dictionary["favorited"] as? Int) ?? 0
    }
 
    // this is a class function (static)

@@ -19,3 +19,9 @@ struct FontsColors {
    static let buttonFontAttributeName = UIFont(name: "Arial", size: 13)!
 
 }
+
+
+func imageUtils(imageView: UIImage){
+  // imageView.layer.cornerRadius = 3
+  // imageView.clipsToBounds = true
+}

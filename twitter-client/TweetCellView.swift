@@ -11,9 +11,11 @@ import SMIconLabel
 
 class TweetCellView: UITableViewCell {
 
+   let tweetFavorited = false
    var tweet: Tweet! {
       didSet {
 
+         retweetedLabel.text = ""
          let retweetedCount = (tweet.retweeted!) ?? 0
          if retweetedCount != 0{
             /*
@@ -26,8 +28,8 @@ class TweetCellView: UITableViewCell {
             theview.addSubview(labl)
    */
             retweetedLabel.text = String(retweetedCount) + " retweeted"
-           // retweetedLabel.icon = UIImage(named: "retweet")
-            //retweetedLabel.iconPosition = .Left
+           //retweetedLabel.icon = UIImage(named: "retweet-action")
+           //retweetedLabel.iconPosition = .Left
          }
 
          let interval = Int(-(tweet.createdAt?.timeIntervalSinceNow)!)
@@ -46,11 +48,25 @@ class TweetCellView: UITableViewCell {
 
          // user's
          profileImage.setImageWithURL((tweet.user?.profileUrl)!)
+         profileImage.layer.cornerRadius = 3
+         profileImage.clipsToBounds = true
+
          nameLabel.text = tweet.user?.name as? String
          screenNameLabel.text = "@" + ((tweet.user?.screenName)! as String)
 
-         retweetImageView.image = UIImage(named: "retweet-gray-16")
-         favoriteImageView.image = UIImage(named: "like-gray-16")
+
+         replyButton.setImage(UIImage(named: "reply"), forState: UIControlState.Normal)
+         retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
+         
+         // check if user favorite this tweet
+         //tweetFavorited = { from tweet }
+         var favImage: UIImage!
+         if tweetFavorited {
+            favImage = UIImage(named: "star-gold")
+         }else {
+            favImage = UIImage(named: "star2")
+         }
+         favoriteButton.setImage(favImage, forState: UIControlState.Normal)
       }
    }
 
@@ -60,11 +76,25 @@ class TweetCellView: UITableViewCell {
    @IBOutlet weak var screenNameLabel: UILabel!
    @IBOutlet weak var createdSinceLabel: UILabel!
    @IBOutlet weak var tweetTextLabel: UILabel!
+   //@IBOutlet weak var retweetedLabel: UILabel!
+   //@IBOutlet weak var profileImage: UIImageView!
+   //@IBOutlet weak var nameLabel: UILabel!
+   //@IBOutlet weak var screenNameLabel: UILabel!
+   //@IBOutlet weak var createdSinceLabel: UILabel!
+   //@IBOutlet weak var tweetTextLabel: UILabel!
    @IBOutlet weak var retweetCountLabel: UILabel!
    @IBOutlet weak var favoritesCountLabel: UILabel!
 
+   @IBOutlet weak var replyImageView: UIImageView!
    @IBOutlet weak var retweetImageView: UIImageView!
    @IBOutlet weak var favoriteImageView: UIImageView!
+
+   @IBOutlet weak var replyButton: UIButton!
+   @IBOutlet weak var retweetButton: UIButton!
+   @IBOutlet weak var favoriteButton: UIButton!
+  // @IBOutlet weak var replyButton: UIButton!
+   //@IBOutlet weak var retweetButton: UIButton!
+   //@IBOutlet weak var favoriteButton: UIButton!
 
    override func awakeFromNib() {
       super.awakeFromNib()
@@ -77,4 +107,16 @@ class TweetCellView: UITableViewCell {
       // Configure the view for the selected state
    }
    
+   @IBAction func onReplyButton(sender: UIButton) {
+      print("Reply button....")
+
+   }
+   @IBAction func onRetweetButton(sender: UIButton) {
+      print("Retweet button....")
+
+   }
+   @IBAction func onFavoriteButton(sender: UIButton) {
+      print("Favorite button....")
+
+   }
 }

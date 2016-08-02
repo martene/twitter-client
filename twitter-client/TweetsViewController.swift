@@ -18,6 +18,15 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
    let refreshControl = UIRefreshControl()
 
+   var addedTweet: Tweet! {
+      didSet {
+         print("tweets added size 0: \(tweets.count)")
+         tweets.insert(addedTweet, atIndex: 0)
+         print("tweets size 1: \(tweets.count)")
+         tweets.removeLast()
+      }
+   }
+
    override func viewDidLoad() {
       super.viewDidLoad()
       // Do any additional setup after loading the view.
@@ -85,15 +94,23 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
    }
 
    func loadTweetData(){
-
-      TwitterClient.sharedInstance.homeTimeLine({ (tweets: [Tweet]) in
-         self.tweets = tweets
+      if addedTweet != nil {
+         print("tweets size 0: \(tweets.count)")
+         self.tweets.insert(addedTweet, atIndex: 0)
+         print("tweets size 1: \(tweets.count)")
+         self.tweets.removeLast()
+         print("tweets size 2: \(tweets.count)")
          self.tweetsTableView.reloadData()
+      }else {
+         print (" loadTweetData... ")
+         TwitterClient.sharedInstance.homeTimeLine({ (tweets: [Tweet]) in
+            self.tweets = tweets
+            self.tweetsTableView.reloadData()
 
-         }, failure: { (error: NSError) in
-            print("Error getting home timeline: \(error.localizedDescription)")
-      })
-
+            }, failure: { (error: NSError) in
+               print("Error getting home timeline: \(error.localizedDescription)")
+         })
+      }
    }
 
    func refreshControlAction(refreshControl: UIRefreshControl){

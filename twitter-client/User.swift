@@ -8,8 +8,6 @@
 
 import UIKit
 
-
-
 class User: NSObject {
    var name: NSString!
    var screenName: NSString!

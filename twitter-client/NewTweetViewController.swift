@@ -9,7 +9,7 @@
 import UIKit
 
 
-let MAX_CHARATCER_COUNT = 10
+let MAX_CHARATCER_COUNT = 140
 let intialCharacterCount = String(MAX_CHARATCER_COUNT)
 
 class NewTweetViewController: UIViewController, UITextViewDelegate {
@@ -42,10 +42,10 @@ class NewTweetViewController: UIViewController, UITextViewDelegate {
 
       let url = user?.profileUrl
       profileImage.setImageWithURL(url!)
+      profileImage.layer.cornerRadius = 3
+      profileImage.clipsToBounds = true
       newTweetTextView.text = ""
    }
-
-   
 
    override func didReceiveMemoryWarning() {
       super.didReceiveMemoryWarning()
@@ -54,16 +54,17 @@ class NewTweetViewController: UIViewController, UITextViewDelegate {
 
    @IBAction func onSendTweet(sender: AnyObject) {
       print("sending new tweet...")
-      let statusText = newTweetTextView.text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
-      let params: NSDictionary = ["status" : statusText!]
-      TwitterClient.sharedInstance.createTweet(params ,success: { (tweet: Tweet) in
+      //let statusText = newTweetTextView.text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+      //let params: NSDictionary = ["status" : statusText!]
+      let params: NSDictionary = ["status" : newTweetTextView.text]
+      TwitterClient.sharedInstance.createTweet(params, success: { (tweet: Tweet) in
          print("created \(tweet.text)")
 
          // go to hometimeline
          self.navigationController?.popViewControllerAnimated(true)
+         
       }) { (error: NSError) in
             print("error creating tweet...\(error.localizedDescription)")
-         
       }
    }
 
@@ -89,4 +90,33 @@ class NewTweetViewController: UIViewController, UITextViewDelegate {
       //   textView.text = currentText.substringToIndex(currentText.endIndex.advancedBy(MAX_CHARATCER_COUNT-1))
       }
    }
+
+   // MARK: - Navigation
+
+   // In a storyboard-based application, you will often want to do a little preparation before navigation
+   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+      // Get the new view controller using segue.destinationViewController.
+      // Pass the selected object to the new view controller.
+
+      print("new tweet posted segue id: \(segue.identifier)")
+
+      print("prepareForSegue sending new tweet...")
+      //let statusText = newTweetTextView.text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+      //let params: NSDictionary = ["status" : statusText!]
+     let params: NSDictionary = ["status" : newTweetTextView.text]
+      TwitterClient.sharedInstance.createTweet(params, success: { (tweet: Tweet) in
+         print("created \(tweet.text)")
+
+         // go to hometimeline
+         //self.performSegueWithIdentifier("NewTweetPostedSegue", sender: nil)
+         //sender?.popViewControllerAnimated(true//
+
+         let tweetsViewController = segue.destinationViewController as! TweetsViewController
+         tweetsViewController.addedTweet = tweet
+
+      }) { (error: NSError) in
+         print("error creating tweet...\(error.localizedDescription)")
+      }
+   }
+
 }
