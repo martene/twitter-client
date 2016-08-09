@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TweetsViewController: ContentViewController, UITableViewDelegate, UITableViewDataSource {
 
    @IBOutlet weak var tweetsTableView: UITableView!
    @IBOutlet weak var logoutButtonItem: UIBarButtonItem!
@@ -35,8 +35,8 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
       refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), forControlEvents: UIControlEvents.ValueChanged)
       tweetsTableView.insertSubview(refreshControl, atIndex: 0)
 
-      logoutButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
-      newBarButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
+      logoutButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
+      newBarButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
 
       tweetsTableView.dataSource = self
       tweetsTableView.delegate = self
@@ -63,12 +63,17 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
       // Get the new view controller using segue.destinationViewController.
       // Pass the selected object to the new view controller.
 
-      print("segue id: \(segue.identifier)")
-
       if segue.identifier == "TweetDetailSeque" {
+         // customize back button
+         let backButtonItem = UIBarButtonItem()
+         backButtonItem.title = "Home"
+         backButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
+         navigationItem.backBarButtonItem = backButtonItem
+
+
          let tweetCell = sender as! UITableViewCell
          let indexPath = tweetsTableView.indexPathForCell(tweetCell)
-         print("segue: \(indexPath!.row)")
+         //print("segue: \(indexPath!.row)")
          let tweet = tweets[indexPath!.row]
          let detailViewController = segue.destinationViewController as! TweetDetailViewController
          detailViewController.tweet = tweet
@@ -95,11 +100,11 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
    func loadTweetData(){
       if addedTweet != nil {
-         print("tweets size 0: \(tweets.count)")
+         //print("tweets size 0: \(tweets.count)")
          self.tweets.insert(addedTweet, atIndex: 0)
-         print("tweets size 1: \(tweets.count)")
+         //print("tweets size 1: \(tweets.count)")
          self.tweets.removeLast()
-         print("tweets size 2: \(tweets.count)")
+         //print("tweets size 2: \(tweets.count)")
          self.tweetsTableView.reloadData()
       }else {
          print (" loadTweetData... ")

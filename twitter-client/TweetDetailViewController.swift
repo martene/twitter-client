@@ -28,13 +28,17 @@ class TweetDetailViewController: UIViewController {
 
    var tweet: Tweet!
    var tweetFavorited = false
+   var tweetRetweeted = false
 
    override func viewDidLoad() {
       super.viewDidLoad()
 
       // Do any additional setup after loading the view.
-      replyButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
-      print("back bar item \(navigationItem.backBarButtonItem)")
+      replyButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
+      print("back bar item \(navigationItem.leftBarButtonItem)")
+      print("back bar item \(navigationController?.navigationItem.leftBarButtonItem)")
+      print("back bar item \(navigationController?.navigationItem.backBarButtonItem)")
+     // UINavigationBar.appearance().
       //    navigationItem.backBarButtonItem!.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
 
       print ("tweet \(tweet.retweetCount)")
@@ -61,7 +65,7 @@ class TweetDetailViewController: UIViewController {
       screenNameLabel.text = "@" + ((tweet.user?.screenName)! as String)
 
       replyButton.setImage(UIImage(named: "reply"), forState: UIControlState.Normal)
-      retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
+      retweetButton.setImage(UIImage(named: "retweet"), forState: UIControlState.Normal)
 
       // check if user favorite this tweet
       tweetFavorited = tweet.favorited != 0
@@ -82,6 +86,9 @@ class TweetDetailViewController: UIViewController {
    override func viewDidAppear(animated: Bool) {
       super.viewDidAppear(animated)
       print("viewDidAppear back bar item \(navigationItem.backBarButtonItem)")
+      print("viewDidAppearback bar item \(navigationItem.leftBarButtonItem)")
+      print("viewDidAppearback bar item \(navigationController?.navigationItem.leftBarButtonItem)")
+      print("viewDidAppearback bar item \(navigationController?.navigationItem.backBarButtonItem)")
    }
 
 
@@ -100,28 +107,27 @@ class TweetDetailViewController: UIViewController {
 
    @IBAction func onRetweetButton(sender: UIButton) {
 
-
       print ("tweet id: \(tweet.id)")
       let params: NSDictionary = ["id" : tweet.id]
-      if tweetFavorited { //
+      if tweetRetweeted { //
          TwitterClient.sharedInstance.unretweetTweet(params, success: { (tweet: Tweet) -> () in
             print("Tweet unretweeted!")
-            self.tweetFavorited = false
-            self.retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
+            self.tweetRetweeted = false
+            self.retweetButton.setImage(UIImage(named: "retweet"), forState: UIControlState.Normal)
             self.retweetedLabel.text = String(tweet.retweetCount!)
          }) { (error: NSError) -> () in
-            print("Error unretweet!")
+            print("Error unretweet")
          }
       }
       else {
 
          TwitterClient.sharedInstance.retweetTweet(params, success: { (tweet: Tweet) -> () in
             print("Tweet retweeted!")
-            self.tweetFavorited = true
-            self.favoriteButton.setImage(UIImage(named: "retweet2"), forState: UIControlState.Normal)
+            self.tweetRetweeted = true
+            self.favoriteButton.setImage(UIImage(named: "retweeted"), forState: UIControlState.Normal)
             self.retweetedLabel.text = String(tweet.retweetCount!)
          }) { (error: NSError) -> () in
-            print("Error reretweet!")
+            print("Error reretweet")
          } }
 
    }
@@ -135,7 +141,8 @@ class TweetDetailViewController: UIViewController {
             print("Tweet unfavorited!")
             self.tweetFavorited = false
             self.favoriteButton.setImage(UIImage(named: "star2"), forState: UIControlState.Normal)
-            self.favoriteCountLabel.text = String(tweet.favoriteCount!)
+            //self.favoriteCountLabel.text = String(tweet.favoriteCount!)
+            NSNotificationCenter.defaultCenter().postNotificationName(User.LOGOUT_NOTIFICATION, object: nil)
          }) { (error: NSError) -> () in
             print("Error favoriting tweet!")
          }

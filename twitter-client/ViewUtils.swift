@@ -9,7 +9,8 @@
 import UIKit
 
 struct FontsColors {
-   static let picton = UIColor(red:0.33, green:0.67, blue:0.93, alpha:1.0)
+   static let TWITTER_LIGHT_BLUE = UIColor(red:0.33, green:0.67, blue:0.93, alpha:1.0)
+   static let ARIAL13 = UIFont(name: "Arial", size: 13)!
    static let charade = UIColor(red:0.16, green:0.18, blue:0.20, alpha:1.0)
    static let flord = UIColor(red:0.40, green:0.46, blue:0.50, alpha:1.0)
    static let mischka = UIColor(red:0.70, green:0.74, blue:0.77, alpha:1.0)
@@ -21,7 +22,15 @@ struct FontsColors {
 }
 
 
-func imageUtils(imageView: UIImage){
-  // imageView.layer.cornerRadius = 3
-  // imageView.clipsToBounds = true
+func customizeImage(imageView: UIImageView, url: NSURL){
+   imageView.setImageWithURL(url)
+   imageView.layer.cornerRadius = 3
+   imageView.clipsToBounds = true
 }
+
+func viewBorderGray(view: UIView){
+   view.layer.borderWidth = 1
+   view.layer.borderColor = UIColor.lightGrayColor().CGColor
+}
+
+

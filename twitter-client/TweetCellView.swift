@@ -19,17 +19,17 @@ class TweetCellView: UITableViewCell {
          let retweetedCount = (tweet.retweeted!) ?? 0
          if retweetedCount != 0{
             /*
-            let labl = SMIconLabel()
-            labl.text = "john retweeted"
-            labl.icon = UIImage(named: "retweet") // Set icon image
-            labl.iconPadding = 5               // Set padding between icon and label
-            labl.numberOfLines = 0             // Required
-            labl.iconPosition = SMIconLabelPosition.Left // Icon position
-            theview.addSubview(labl)
-   */
+             let labl = SMIconLabel()
+             labl.text = "john retweeted"
+             labl.icon = UIImage(named: "retweet") // Set icon image
+             labl.iconPadding = 5               // Set padding between icon and label
+             labl.numberOfLines = 0             // Required
+             labl.iconPosition = SMIconLabelPosition.Left // Icon position
+             theview.addSubview(labl)
+             */
             retweetedLabel.text = String(retweetedCount) + " retweeted"
-           //retweetedLabel.icon = UIImage(named: "retweet-action")
-           //retweetedLabel.iconPosition = .Left
+            //retweetedLabel.icon = UIImage(named: "retweet-action")
+            //retweetedLabel.iconPosition = .Left
          }
 
          let interval = Int(-(tweet.createdAt?.timeIntervalSinceNow)!)
@@ -47,17 +47,19 @@ class TweetCellView: UITableViewCell {
          //favoritesCountLabel.text = String(tweet.favoritesCount!)
 
          // user's
-         profileImage.setImageWithURL((tweet.user?.profileUrl)!)
-         profileImage.layer.cornerRadius = 3
-         profileImage.clipsToBounds = true
+         customizeImage(profileImage, url: (tweet.user?.profileUrl)!)
+         let tap = UITapGestureRecognizer(target: self, action: #selector(TweetCellView.openUserProfile))
+         profileImage.addGestureRecognizer(tap)
+         profileImage.userInteractionEnabled = true
+
 
          nameLabel.text = tweet.user?.name as? String
          screenNameLabel.text = "@" + ((tweet.user?.screenName)! as String)
 
 
          replyButton.setImage(UIImage(named: "reply"), forState: UIControlState.Normal)
-         retweetButton.setImage(UIImage(named: "retweet-action"), forState: UIControlState.Normal)
-         
+         retweetButton.setImage(UIImage(named: "retweet"), forState: UIControlState.Normal)
+
          // check if user favorite this tweet
          //tweetFavorited = { from tweet }
          var favImage: UIImage!
@@ -76,12 +78,6 @@ class TweetCellView: UITableViewCell {
    @IBOutlet weak var screenNameLabel: UILabel!
    @IBOutlet weak var createdSinceLabel: UILabel!
    @IBOutlet weak var tweetTextLabel: UILabel!
-   //@IBOutlet weak var retweetedLabel: UILabel!
-   //@IBOutlet weak var profileImage: UIImageView!
-   //@IBOutlet weak var nameLabel: UILabel!
-   //@IBOutlet weak var screenNameLabel: UILabel!
-   //@IBOutlet weak var createdSinceLabel: UILabel!
-   //@IBOutlet weak var tweetTextLabel: UILabel!
    @IBOutlet weak var retweetCountLabel: UILabel!
    @IBOutlet weak var favoritesCountLabel: UILabel!
 
@@ -92,7 +88,7 @@ class TweetCellView: UITableViewCell {
    @IBOutlet weak var replyButton: UIButton!
    @IBOutlet weak var retweetButton: UIButton!
    @IBOutlet weak var favoriteButton: UIButton!
-  // @IBOutlet weak var replyButton: UIButton!
+   // @IBOutlet weak var replyButton: UIButton!
    //@IBOutlet weak var retweetButton: UIButton!
    //@IBOutlet weak var favoriteButton: UIButton!
 
@@ -103,10 +99,10 @@ class TweetCellView: UITableViewCell {
 
    override func setSelected(selected: Bool, animated: Bool) {
       super.setSelected(selected, animated: animated)
-      
+
       // Configure the view for the selected state
    }
-   
+
    @IBAction func onReplyButton(sender: UIButton) {
       print("Reply button....")
 
@@ -118,5 +114,20 @@ class TweetCellView: UITableViewCell {
    @IBAction func onFavoriteButton(sender: UIButton) {
       print("Favorite button....")
 
+   }
+
+   func openUserProfile(){
+      print(" open user profile \(tweet.user?.screenName)")
+      let storyboard = UIStoryboard(name: "Main", bundle: nil)
+      let profileNavigationController = storyboard.instantiateViewControllerWithIdentifier("ProfileNavigationController") as! UINavigationController
+      let userProfileViewController = profileNavigationController.topViewController as! UserProfileViewController
+      userProfileViewController.profileScreenName = (tweet.user?.screenName)!
+
+      let hamburgerNavigationController = storyboard.instantiateViewControllerWithIdentifier("HamburgerNavigationController") as! UINavigationController
+      let hamburgerViewController = hamburgerNavigationController.topViewController as! HamburgerViewController
+      hamburgerViewController.profileScreenName = (tweet.user?.screenName)!
+      hamburgerViewController.contentViewController = profileNavigationController
+
+      window?.rootViewController = hamburgerViewController
    }
 }

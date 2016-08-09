@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
    var window: UIWindow?
 
-
    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
       // Override point for customization after application launch.
 
@@ -24,12 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
       // buttons
       UINavigationBar.appearance().tintColor = UIColor.whiteColor()
-      UINavigationBar.appearance().barTintColor =  UIColor(red:0.33, green:0.67, blue:0.93, alpha:1.0)
-      //UIColor(red: CGFloat(196/255.0), green: CGFloat(18/255.0), blue: CGFloat(0), alpha: CGFloat(1))
-
-      // white
-      // [View controller-based status bar appearance] set to NO in Info.plist
-
+      UINavigationBar.appearance().barTintColor =  FontsColors.TWITTER_LIGHT_BLUE
       // title
       UINavigationBar.appearance().titleTextAttributes = [
          NSForegroundColorAttributeName:UIColor.whiteColor(),
@@ -43,9 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       if User.currentUser != nil {
          // got to twitter screen instead of the login screen
          print ("Current user is set! Routing to Tweets view controller...")
-         let viewController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController")
-         window?.rootViewController = viewController
+         //let viewController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController")
+         let hamburgerNavigationController = storyboard.instantiateViewControllerWithIdentifier("HamburgerNavigationController") as! UINavigationController
+         let hamburgerViewController = hamburgerNavigationController.topViewController as! HamburgerViewController
 
+         window?.rootViewController = hamburgerViewController
       }else {
          print ("No current user set! Routing to login screen...")
       }

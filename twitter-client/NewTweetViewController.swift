@@ -33,8 +33,9 @@ class NewTweetViewController: UIViewController, UITextViewDelegate {
       newTweetTextView.delegate = self
 
       // customize navigation bar
-      cancelButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
-      tweetButtonItem.setTitleTextAttributes([ NSFontAttributeName: UIFont(name: "Arial", size: 13)!], forState: UIControlState.Normal)
+      cancelButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
+      tweetButtonItem.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13], forState: UIControlState.Normal)
+      charatersCountButton.setTitleTextAttributes([ NSFontAttributeName: FontsColors.ARIAL13, NSForegroundColorAttributeName: UIColor.darkGrayColor()], forState: UIControlState.Normal)
       navigationItem.rightBarButtonItems?.append(charatersCountButton)
 
       usernameLabel.text = user?.name as? String
